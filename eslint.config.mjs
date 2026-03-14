@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Legacy nested app folder kept only for stale local caches.
+    "app/**",
   ]),
 ]);
 

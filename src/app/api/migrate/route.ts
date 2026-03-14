@@ -35,7 +35,7 @@ export const POST = withUsageLogging(async (request: Request) => {
       throw new Error("SUPABASE_SERVICE_ROLE_KEY is not configured.");
     }
 
-    const rootDir = path.join(process.cwd(), "..");
+    const rootDir = process.cwd();
     const [schemaSql, seedSql] = await Promise.all([
       readFile(path.join(rootDir, "schema.sql"), "utf8"),
       readFile(path.join(rootDir, "seed.sql"), "utf8"),
