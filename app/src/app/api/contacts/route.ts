@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -25,7 +26,7 @@ function normalizeTags(tags?: string[] | string) {
   return [];
 }
 
-export async function GET(request: Request) {
+export const GET = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -44,9 +45,9 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json(data ?? []);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -85,4 +86,4 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json(data);
-}
+});

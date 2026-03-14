@@ -1,5 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { getActiveOrgIdForUser } from "@/lib/org";
+import { setRequestContextOrgId } from "@/lib/requestContext";
 import { createClient } from "@/lib/supabase/server";
 import { touchApiKey, validateApiKey } from "@/lib/validateApiKey";
 
@@ -24,6 +25,7 @@ export async function authorizeRequest(
 
     if (orgId) {
       await touchApiKey(providedApiKey);
+      setRequestContextOrgId(orgId);
       return {
         mode: "api_key",
         orgId,
@@ -48,6 +50,8 @@ export async function authorizeRequest(
   if (!orgId) {
     return null;
   }
+
+  setRequestContextOrgId(orgId);
 
   return {
     mode: "session",

@@ -6,30 +6,51 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   BookUser,
   Bot,
+  FileText,
   LayoutDashboard,
   LogOut,
   Mail,
   Menu,
   Megaphone,
   PanelLeftClose,
+  Phone,
   PlugZap,
+  Search,
   Settings,
+  ShieldCheck,
   Sparkles,
   Workflow,
   X,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
-const navigation = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/campaigns", label: "Campaigns", icon: Megaphone },
-  { href: "/contacts", label: "Contacts", icon: BookUser },
-  { href: "/inbox", label: "Inbox", icon: Mail },
-  { href: "/chatbots", label: "Chatbots", icon: Workflow },
-  { href: "/optimize", label: "Optimize", icon: Sparkles },
-  { href: "/connectors", label: "Connectors", icon: PlugZap },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
+const navigationGroups = [
+  {
+    label: "Overview",
+    items: [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "Campaigns",
+    items: [
+      { href: "/campaigns", label: "Campaigns", icon: Megaphone },
+      { href: "/verify", label: "2FA Verify", icon: ShieldCheck },
+      { href: "/lookup", label: "Number Lookup", icon: Search },
+      { href: "/numbers", label: "Phone Numbers", icon: Phone },
+      { href: "/templates", label: "Templates", icon: FileText },
+    ],
+  },
+  {
+    label: "Workspace",
+    items: [
+      { href: "/contacts", label: "Contacts", icon: BookUser },
+      { href: "/inbox", label: "Inbox", icon: Mail },
+      { href: "/chatbots", label: "Chatbots", icon: Workflow },
+      { href: "/optimize", label: "Optimize", icon: Sparkles },
+      { href: "/connectors", label: "Connectors", icon: PlugZap },
+      { href: "/settings", label: "Settings", icon: Settings },
+    ],
+  },
+] as const;
 
 type SidebarUser = {
   avatarUrl: string | null;
@@ -185,26 +206,35 @@ export function Sidebar({ initialUser }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="mt-10 space-y-2">
-          {navigation.map(({ href, label, icon: Icon }) => {
-            const active = pathname === href;
+        <nav className="mt-10 space-y-6">
+          {navigationGroups.map((group) => (
+            <div key={group.label}>
+              <p className="px-4 text-[10px] uppercase tracking-[0.3em] text-slate-500">
+                {group.label}
+              </p>
+              <div className="mt-3 space-y-2">
+                {group.items.map(({ href, label, icon: Icon }) => {
+                  const active = pathname === href;
 
-            return (
-              <Link
-                key={href}
-                href={href}
-                className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
-                  active
-                    ? "bg-[#3182ce] text-white shadow-[0_14px_28px_rgba(49,130,206,0.26)]"
-                    : "text-slate-300 hover:bg-white/5 hover:text-white"
-                }`}
-                onClick={() => setIsMobileOpen(false)}
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </Link>
-            );
-          })}
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
+                        active
+                          ? "bg-[#3182ce] text-white shadow-[0_14px_28px_rgba(49,130,206,0.26)]"
+                          : "text-slate-300 hover:bg-white/5 hover:text-white"
+                      }`}
+                      onClick={() => setIsMobileOpen(false)}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         <div className="mt-auto rounded-3xl border border-white/10 bg-white/5 p-4">

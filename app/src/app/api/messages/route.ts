@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { recordAnalyticsUpdates } from "@/lib/analytics";
 import { resolveConnectorForChannel } from "@/lib/connectorsServer";
+import { withUsageLogging } from "@/lib/logUsage";
 import { costMap, isMessagingChannel, simulateDeliveryStatus } from "@/lib/messaging";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { authorizeRequest } from "@/lib/requestAuth";
@@ -13,7 +14,7 @@ type MessageRequest = {
   channel?: string;
 };
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request);
 
   if (!authorization) {
@@ -103,4 +104,4 @@ export async function POST(request: Request) {
     connector_provider: connectorProfile?.provider ?? null,
     delivery_mode: connectorProfile?.transport_mode ?? "simulated",
   });
-}
+});

@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { withUsageLogging } from "@/lib/logUsage";
 import { parseJsonObject } from "@/lib/openai";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -15,7 +16,7 @@ type SentimentResponse = {
   label: "Positive" | "Neutral" | "Negative";
 };
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -94,4 +95,4 @@ export async function POST(request: Request) {
     score: parsed.score,
     label: parsed.label,
   });
-}
+});

@@ -5,20 +5,11 @@ import { Client } from "pg";
 const migrationFiles = [
   {
     name: "schema",
-    filePath: path.join(
-      process.cwd(),
-      "supabase",
-      "migrations",
-      "001_schema.sql",
-    ),
+    filePath: path.join(process.cwd(), "..", "schema.sql"),
   },
   {
     name: "seed",
-    filePath: path.join(
-      process.cwd(),
-      "supabase",
-      "seed.sql",
-    ),
+    filePath: path.join(process.cwd(), "..", "seed.sql"),
   },
 ];
 

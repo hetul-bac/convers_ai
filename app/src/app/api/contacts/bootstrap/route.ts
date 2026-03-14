@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { buildStarterContacts } from "@/lib/starterContacts";
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -39,4 +40,4 @@ export async function POST(request: Request) {
     inserted: rows.length,
     total_contacts: rows.length,
   });
-}
+});

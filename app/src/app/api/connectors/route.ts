@@ -7,6 +7,7 @@ import {
   validateConnectorCredentials,
   type ConnectorRow,
 } from "@/lib/connectors";
+import { withUsageLogging } from "@/lib/logUsage";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isMessagingChannel } from "@/lib/messaging";
 
@@ -17,7 +18,7 @@ type ConnectorRequest = {
   credentials?: Record<string, unknown>;
 };
 
-export async function GET(request: Request) {
+export const GET = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -40,9 +41,9 @@ export async function GET(request: Request) {
   return NextResponse.json(
     ((data ?? []) as ConnectorRow[]).map(sanitizeConnectorRow),
   );
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -119,4 +120,4 @@ export async function POST(request: Request) {
     connector: sanitizeConnectorRow(data as ConnectorRow),
     message: validation.message,
   });
-}
+});

@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { getApiKeyHash } from "@/lib/validateApiKey";
 
@@ -8,7 +9,7 @@ type CreateKeyRequest = {
   name?: string;
 };
 
-export async function GET(request: Request) {
+export const GET = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -27,9 +28,9 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json(data ?? []);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -60,4 +61,4 @@ export async function POST(request: Request) {
     key: plaintextKey,
     record: data,
   });
-}
+});

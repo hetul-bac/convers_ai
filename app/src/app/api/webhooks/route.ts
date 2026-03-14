@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { withUsageLogging } from "@/lib/logUsage";
 import {
   generateWebhookSecret,
   isWebhookEvent,
@@ -12,7 +13,7 @@ type WebhookRequest = {
   events?: string[];
 };
 
-export async function GET(request: Request) {
+export const GET = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -32,9 +33,9 @@ export async function GET(request: Request) {
   }
 
   return NextResponse.json(data ?? null);
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -120,4 +121,4 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json(data);
-}
+});

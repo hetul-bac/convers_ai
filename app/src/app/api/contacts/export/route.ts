@@ -1,8 +1,9 @@
 import { formatCsv } from "@/lib/csv";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export async function GET(request: Request) {
+export const GET = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -47,4 +48,4 @@ export async function GET(request: Request) {
       "Content-Disposition": 'attachment; filename="conversai-contacts.csv"',
     },
   });
-}
+});

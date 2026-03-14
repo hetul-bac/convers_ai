@@ -9,6 +9,7 @@ import {
   isChatbotStatus,
   type ChatbotGraph,
 } from "@/lib/chatbots";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { isMessagingChannel } from "@/lib/messaging";
 
@@ -135,7 +136,7 @@ function normalizeDraftBot(input: ChatbotDraftPayload): ChatbotGraph {
   };
 }
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -166,4 +167,4 @@ export async function POST(request: Request) {
 
   const result = await classifyChatbotIntent(bot, utterance);
   return NextResponse.json(result);
-}
+});

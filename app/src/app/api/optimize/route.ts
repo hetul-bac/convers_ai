@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
+import { withUsageLogging } from "@/lib/logUsage";
 import { parseJsonObject } from "@/lib/openai";
 import { authorizeRequest } from "@/lib/requestAuth";
 
@@ -46,7 +47,7 @@ function stringifyOptimizationValue(value: unknown): string {
   return String(value);
 }
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request);
 
   if (!authorization) {
@@ -104,4 +105,4 @@ export async function POST(request: Request) {
       { status: 502 },
     );
   }
-}
+});

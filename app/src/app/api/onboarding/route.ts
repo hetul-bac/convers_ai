@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getActiveOrgIdForUser } from "@/lib/org";
+import { withUsageLogging } from "@/lib/logUsage";
+import { setRequestContextOrgId } from "@/lib/requestContext";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { buildStarterContacts } from "@/lib/starterContacts";
@@ -12,7 +14,7 @@ type OnboardingRequest = {
   plan?: string;
 };
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -25,6 +27,7 @@ export async function POST(request: Request) {
   const existingOrgId = await getActiveOrgIdForUser(user);
 
   if (existingOrgId) {
+    setRequestContextOrgId(existingOrgId);
     return NextResponse.json({ org_id: existingOrgId });
   }
 
@@ -105,8 +108,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: metadataError.message }, { status: 500 });
   }
 
+  setRequestContextOrgId(organizationId);
+
   return NextResponse.json({
     org_id: organizationId,
     organization_name: organizationName,
   });
-}
+});

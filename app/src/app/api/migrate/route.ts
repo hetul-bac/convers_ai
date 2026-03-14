@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { NextResponse } from "next/server";
 import { Client } from "pg";
+import { withUsageLogging } from "@/lib/logUsage";
 
 function getDatabaseUrl() {
   const databaseUrl =
@@ -21,7 +22,7 @@ function getDatabaseUrl() {
   return databaseUrl;
 }
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const adminSecret = process.env.ADMIN_SECRET;
   const providedSecret = request.headers.get("x-admin-secret");
 
@@ -65,4 +66,4 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
+});

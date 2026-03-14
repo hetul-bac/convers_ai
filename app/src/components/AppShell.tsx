@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 
-const sidebarlessRoutes = ["/login", "/onboarding"];
+const sidebarlessRoutes = ["/login", "/onboarding", "/docs"];
 
 type AppShellProps = {
   children: ReactNode;

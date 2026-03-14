@@ -2,7 +2,19 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+This app requires Node.js `>=20.9.0`. If you use `nvm`, switch to the project version first:
+
+```bash
+nvm use
+```
+
+If `nvm` has not picked up the project version yet, run:
+
+```bash
+nvm use 20.20.1
+```
+
+Then start the development server:
 
 ```bash
 npm run dev

@@ -1,5 +1,12 @@
 import { redirect } from "next/navigation";
-import { CircleDollarSign, MessageSquareText, Send, Target } from "lucide-react";
+import {
+  CircleDollarSign,
+  FileText,
+  MessageSquareText,
+  Send,
+  ShieldCheck,
+  Target,
+} from "lucide-react";
 import { DashboardCharts } from "@/components/DashboardCharts";
 import { requireActiveOrgId } from "@/lib/org";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -50,6 +57,8 @@ export default async function DashboardPage() {
     { data: recentMessages, count: messageCount },
     { count: deliveredCount },
     { count: campaignsCount },
+    { count: verifiedNumbersCount },
+    { count: templatesCount },
   ] =
     await Promise.all([
       admin
@@ -69,6 +78,15 @@ export default async function DashboardPage() {
         .in("status", ["delivered", "read"]),
       admin
         .from("campaigns")
+        .select("*", { count: "exact", head: true })
+        .eq("org_id", orgId),
+      admin
+        .from("phone_numbers")
+        .select("*", { count: "exact", head: true })
+        .eq("org_id", orgId)
+        .eq("is_verified", true),
+      admin
+        .from("templates")
         .select("*", { count: "exact", head: true })
         .eq("org_id", orgId),
     ]);
@@ -193,6 +211,18 @@ export default async function DashboardPage() {
       icon: Target,
     },
     {
+      label: "Verified Numbers",
+      value: verifiedNumbersCount ?? 0,
+      accent: "bg-emerald-50 text-emerald-600",
+      icon: ShieldCheck,
+    },
+    {
+      label: "Templates",
+      value: templatesCount ?? 0,
+      accent: "bg-violet-50 text-violet-700",
+      icon: FileText,
+    },
+    {
       label: "Cost Today",
       value: `$${costToday.toFixed(2)}`,
       accent: "bg-sky-50 text-sky-700",
@@ -245,7 +275,7 @@ export default async function DashboardPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {stats.map(({ label, value, accent, icon: Icon }) => (
           <article key={label} className="surface-panel p-5">
             <div className="flex items-center justify-between">

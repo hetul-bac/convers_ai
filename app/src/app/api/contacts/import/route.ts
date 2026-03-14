@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { parseCsv } from "@/lib/csv";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -11,7 +12,7 @@ function parseTags(raw: string) {
     .filter(Boolean);
 }
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -91,4 +92,4 @@ export async function POST(request: Request) {
   return NextResponse.json({
     inserted: data ?? [],
   });
-}
+});

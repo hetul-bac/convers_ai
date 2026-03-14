@@ -4,6 +4,7 @@ import {
   loadChatbotsForOrg,
   saveChatbotConfiguration,
 } from "@/lib/chatbotStore";
+import { withUsageLogging } from "@/lib/logUsage";
 import { authorizeRequest } from "@/lib/requestAuth";
 
 type SaveBotRequest = {
@@ -37,7 +38,7 @@ type SaveBotRequest = {
   }>;
 };
 
-export async function GET(request: Request) {
+export const GET = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -53,9 +54,9 @@ export async function GET(request: Request) {
       { status: 500 },
     );
   }
-}
+});
 
-export async function POST(request: Request) {
+export const POST = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -71,9 +72,9 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-}
+});
 
-export async function PUT(request: Request) {
+export const PUT = withUsageLogging(async (request: Request) => {
   const authorization = await authorizeRequest(request, { sessionOnly: true });
 
   if (!authorization) {
@@ -106,4 +107,4 @@ export async function PUT(request: Request) {
       { status: 500 },
     );
   }
-}
+});
